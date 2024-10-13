@@ -18,21 +18,46 @@ make
 
 **3.** El programa le pedirá que introduzca cadenas de entrada para el autómata de pila hasta que introduzca una cadena vacía (presionar *Enter* sin escribir nada).
 
-**4.** El programa le mostrará si la cadena de entrada es aceptada o rechazada por el autómata de pila.
+**4.** El programa le mostrará si la cadena de entrada es aceptada o rechazada por el autómata de pila y el número de transiciones realizadas. Si se tiene el modo traza activado, se mostrará la traza en cada transición.
 
 **5.** Para limpiar los archivos generados por el programa, ejecute el siguiente comando:
 ```bash
 make clean
 ```
-## Descripción
-En esta práctica se ha implementado un programa en C++ que calcula la potencia de un número entero no negativo usando funciones primitivas recursivas. Para ello, se han implementado las siguientes funciones primitivas recursivas:
-* **Cero:** Función que devuelve 0.
-* **Sucesor:** Función que devuelve el sucesor de un número.
-* **Proyección:** Función que devuelve uno de los argumentos que recibe.
-* **Suma:** Función que devuelve la suma de dos números.
-* **Producto:** Función que devuelve el producto de dos números.
-* **Potencia:** Función que devuelve la potencia de un número.
 
-Y operadores primitivos:
-* **Composición:** Operador que permite componer funciones primitivas recursivas.
-* **Combinación:** Operador que permite combinar el resultado de funciones primitivas recursivas.
+## Modo traza
+Para activar el modo traza, descomente la siguiente línea en el archivo *main.cpp*:
+```cpp
+pda.EnableTrace();
+```
+## Descripción
+En esta práctica se ha implementado un programa en C++ que implementa un autómata de pila (PDA) por vaciado. El programa recibe como entrada un archivo que contiene la definición del autómata de pila y le solicita al usuario que introduzca cadenas de entrada para el autómata de pila. El programa mostrará si la cadena de entrada es aceptada o rechazada por el autómata de pila y el número de transiciones realizadas. Si se tiene el modo traza activado, se mostrará la traza en cada transición.
+
+El autómata de pila es una 7-tupla (Q, Σ, Γ, δ, q0, Z0, F) donde:
+* Q: Conjunto finito de estados.
+* Σ: Alfabeto de entrada.
+* Γ: Alfabeto de la pila.
+* δ: Función de transición.
+* q0: Estado inicial.
+* Z0: Símbolo inicial de la pila.
+* F: Conjunto de estados finales (en este caso, como es por vaciado, no se utiliza).
+
+El autómata de pila se representa mediante una clase **PDA** que contiene los siguientes métodos:
+```cpp
+// Constructor de la clase.
+PDA::PDA(...)
+// Método que verifica si una cadena de entrada es aceptada por el autómata de pila.
+PDA::Accepts(std::string input)
+// Método que activa el modo traza.
+PDA::EnableTrace()
+// Método que devuelve el número de transiciones realizadas.
+PDA::TransitionCounter()
+```
+
+Se han implementado otras clases auxiliares para representar los elementos del autómata de pila:
+* **PDAStack:** Clase que representa la pila del autómata de pila.
+* **State:** Clase que representa un estado del autómata de pila.
+* **Symbol:** Clase que representa un símbolo del autómata de pila.
+* Y otros tipos para representar las transiciones del autómata de pila.
+
+Para la entrada del autómata de pila, se ha implementado una clase **PDAInput** que lee un archivo que contiene la definición del autómata de pila y devuelve un objeto de la clase **PDA**.

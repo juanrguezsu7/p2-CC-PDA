@@ -1,7 +1,24 @@
+/**
+ * @file PDAInput.cpp
+ * @author Juan Rodríguez Suárez
+ * @brief Contains the definition of the class to read a PDA from a file.
+ * @date 12/10/2024
+ */
+
 #include "PDAInput.hpp"
 
+/** 
+ * @brief Symbol used to indicate that a line is a comment.
+ */
 const char PDAInput::COMMENT_SYMBOL = '#';
 
+/**
+ * @brief Reads a PDA from a file. The format is specified in the class documentation.
+ * 
+ * @param FILENAME Name of the file to read the PDA from.
+ * @return The PDA read from the file.
+ * @throw std::invalid_argument If the file does not exist or the PDA specified in the file is invalid.
+ */
 PDA PDAInput::ReadPDA(const std::string& FILENAME) {
   std::ifstream reader{FILENAME};
   if (!reader.is_open()) {
@@ -43,6 +60,15 @@ PDA PDAInput::ReadPDA(const std::string& FILENAME) {
   return PDA{states, alphabet, initialState, PDAStack{stackAlphabet, initialStackSymbol}};
 }
 
+/**
+ * @brief Adds a transition to the PDA.
+ * 
+ * @param states Map of states of the PDA.
+ * @param RAW_TRANSITION Raw data of the transition.
+ * @param INNER_ALPHABET Alphabet of the input symbols.
+ * @param STACK_ALPHABET Alphabet of the stack symbols.
+ * @throw std::invalid_argument If the transition is invalid.
+ */
 void PDAInput::AddTransition(std::map<std::string, State*>& states, const std::string& RAW_TRANSITION, const Alphabet& INNER_ALPHABET, const Alphabet& STACK_ALPHABET) {
   std::stringstream readingStream{RAW_TRANSITION};
   std::string rawData;
@@ -82,10 +108,22 @@ void PDAInput::AddTransition(std::map<std::string, State*>& states, const std::s
   }
 }
 
+/**
+ * @brief Formats the alphabet to a string.
+ * 
+ * @param ALPHABET Alphabet to format.
+ * @return The formatted alphabet.
+ */
 std::string PDAInput::AlphabetFormatting(const Alphabet& ALPHABET) {
   return std::accumulate(ALPHABET.begin(), ALPHABET.end(), std::string{}, [](const std::string& ACCOUNT, const Symbol& SYMBOL) { return ACCOUNT + SYMBOL.ToString() + " "; });
 }
 
+/**
+ * @brief Formats the states to a string.
+ * 
+ * @param STATES States to format.
+ * @return The formatted states.
+ */
 std::string PDAInput::StatesFormatting(const std::map<std::string, State*>& STATES) {
   return std::accumulate(STATES.begin(), STATES.end(), std::string{}, [](const std::string& ACCOUNT, const std::pair<std::string, State*>& PAIR) { return ACCOUNT + PAIR.first + " "; });
 }

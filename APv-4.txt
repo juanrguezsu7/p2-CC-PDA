@@ -1,0 +1,7 @@
+# Automata que nunca para
+q1
+a
+S
+q1
+S
+q1 . S q1 S
