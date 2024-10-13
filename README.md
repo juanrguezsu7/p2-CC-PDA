@@ -45,13 +45,13 @@ El autómata de pila es una 7-tupla (Q, Σ, Γ, δ, q0, Z0, F) donde:
 El autómata de pila se representa mediante una clase **PDA** que contiene los siguientes métodos:
 ```cpp
 // Constructor de la clase.
-PDA::PDA(...)
+PDA::PDA(...);
 // Método que verifica si una cadena de entrada es aceptada por el autómata de pila.
-PDA::Accepts(std::string input)
+PDA::Accepts(std::string input);
 // Método que activa el modo traza.
-PDA::EnableTrace()
+PDA::EnableTrace();
 // Método que devuelve el número de transiciones realizadas.
-PDA::TransitionCounter()
+PDA::TransitionCounter();
 ```
 
 Se han implementado otras clases auxiliares para representar los elementos del autómata de pila:
