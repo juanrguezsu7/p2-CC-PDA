@@ -96,16 +96,7 @@ void PDAInput::AddTransition(std::map<std::string, State*>& states, const std::s
   if (STACK_ALPHABET.find(stackSymbol) == STACK_ALPHABET.end()) {
     throw std::invalid_argument{"Reading file error: Stack symbol: '" + stackSymbol.ToString() + "' not found in stack alphabet ( " + AlphabetFormatting(STACK_ALPHABET) + ")"};
   }
-  if (fromState->Transitions().find(inputSymbol) != fromState->Transitions().end()) {
-    auto& inputTransitions = fromState->Transitions()[inputSymbol];
-    if (inputTransitions.find(stackSymbol) != inputTransitions.end()) {
-        inputTransitions[stackSymbol].emplace_back(TransitionResult{toState, stackSymbols});
-    } else {
-      inputTransitions.emplace(stackSymbol, std::vector<TransitionResult>{TransitionResult{toState, stackSymbols}});
-    }
-  } else {
-    fromState->Transitions().emplace(inputSymbol, std::map<Symbol, std::vector<TransitionResult>> {{stackSymbol, std::vector<TransitionResult>{TransitionResult{toState, stackSymbols}}}});
-  }
+  fromState->Transitions().AddTransition(inputSymbol, stackSymbol, toState, stackSymbols);
 }
 
 /**

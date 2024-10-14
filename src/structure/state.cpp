@@ -8,17 +8,6 @@
 #include "state.hpp"
 
 /**
- * @brief Type to represent the result of a transition. The result is a tuple containing the next state and the symbols to push to the stack. 
- */
-using TransitionResult = std::tuple<State*, std::vector<Symbol>>;
-
-/**
- * @brief Type to represent the transitions of a state. The transitions are stored in a map where the key is the input symbol and the value is
- *        another map whose key is the top of the stack and the value is a vector of TransitionResult.
- */
-using InputSymbolTransitions = std::map<Symbol, std::map<Symbol, std::vector<TransitionResult>>>;
-
-/**
  * @brief Constructs a new State object.
  * 
  * @param NAME Name of the state.
@@ -35,19 +24,19 @@ const std::string& State::ToString() const {
 }
 
 /**
- * @brief Returns a read/write reference to the transitions of the state.
- * 
- * @return A read/write reference to the transitions of the state.
- */
-InputSymbolTransitions& State::Transitions() { 
-  return transitions; 
-}
-
-/**
  * @brief Returns a read-only reference to the transitions of the state.
  * 
  * @return A read-only reference to the transitions of the state.
  */
-const InputSymbolTransitions& State::Transitions() const { 
+const TransitionSet& State::Transitions() const { 
   return transitions; 
+}
+
+/**
+ * @brief Returns a reference to the transitions of the state.
+ * 
+ * @return A reference to the transitions of the state.
+ */
+TransitionSet& State::Transitions() { 
+  return transitions;
 }

@@ -14,6 +14,7 @@
                 "./structure/PDAStack.cpp",
                 "./structure/state.cpp",
                 "./structure/symbol.cpp",
+                "./structure/transitionSet.cpp",
                 "-o",
                 "${workspaceFolder}\\${fileBasenameNoExtension}.exe"
             ],

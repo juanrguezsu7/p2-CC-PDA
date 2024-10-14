@@ -7,24 +7,19 @@
 
 #pragma once
 
-#include <map>
-#include <tuple>
-
-#include "symbol.hpp"
+#include "transitionSet.hpp"
 
 /**
  * @brief Class to represent a PDA state. A state is a node in the graph of a PDA which contains transitions to other states depending 
  *        on the input symbol and the top of the stack.
  */
 class State {
-  using TransitionResult = std::tuple<State*, std::vector<Symbol>>;
-  using InputSymbolTransitions = std::map<Symbol, std::map<Symbol, std::vector<TransitionResult>>>;
   public:
-    State(const std::string& NAME);
+    State(const std::string&);
     const std::string& ToString() const;
-    InputSymbolTransitions& Transitions();
-    const InputSymbolTransitions& Transitions() const;
+    const TransitionSet& Transitions() const;
+    TransitionSet& Transitions();
   private:
     const std::string name;
-    InputSymbolTransitions transitions;
+    TransitionSet transitions;
 };

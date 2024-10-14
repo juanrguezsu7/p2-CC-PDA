@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <set>
 #include <numeric>
+#include <algorithm>
 
 #include "symbol.hpp"
 
@@ -26,6 +27,7 @@ class PDAStack {
   public:
     PDAStack(const Alphabet&, const Symbol&);
     void Push(const Symbol&);
+    void Push(const std::vector<Symbol>&);
     Symbol Pop();
     bool IsEmpty() const;
     std::string ToString() const;

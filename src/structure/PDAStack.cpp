@@ -24,11 +24,27 @@ PDAStack::PDAStack(const Alphabet& INNER_ALPHABET, const Symbol& INITIAL_SYMBOL)
  * @throw std::invalid_argument If the symbol is not in the stack alphabet.
  */
 void PDAStack::Push(const Symbol& SYMBOL) {
+  if (SYMBOL == Symbol::EPSILON) {
+    return;
+  }
   if (innerAlphabet.find(SYMBOL) == innerAlphabet.end()) {
     const std::string ALPHABET_STR{std::accumulate(innerAlphabet.begin(), innerAlphabet.end(), std::string{}, [](const std::string& ACCOUNT, const Symbol& SYMBOL) { return ACCOUNT + SYMBOL.ToString() + " "; })};
     throw std::invalid_argument{"Reading file error: Stack symbol: '" + SYMBOL.ToString() + "' not found in stack alphabet ( " + ALPHABET_STR + ")"};
   }
   stack.push(SYMBOL);
+}
+
+/**
+ * @brief Pushes a vector of symbols to the stack.
+ * 
+ * @param SYMBOLS Symbols to push.
+ */
+void PDAStack::Push(const std::vector<Symbol>& SYMBOLS) {
+  std::vector<Symbol> reversedSymbols{SYMBOLS};
+  std::reverse(reversedSymbols.begin(), reversedSymbols.end());
+  for (const Symbol& SYMBOL : reversedSymbols) {
+    Push(SYMBOL);
+  }
 }
 
 /**

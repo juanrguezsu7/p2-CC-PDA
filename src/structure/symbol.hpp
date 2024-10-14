@@ -19,10 +19,11 @@ class Symbol {
   
     Symbol(const char);
     static std::vector<Symbol> ToSymbols(const std::string&);
-    bool operator ==(const Symbol&) const;
-    bool operator !=(const Symbol&) const;
-    bool operator <(const Symbol&) const;
-    std::string ToString() const;
+    bool operator==(const Symbol&) const;
+    bool operator!=(const Symbol&) const;
+    bool operator<(const Symbol&) const;
+    Symbol& operator=(const Symbol&);
+    const std::string ToString() const;
   private: 
-    const char value;
+    char value;
 };

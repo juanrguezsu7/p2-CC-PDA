@@ -62,71 +62,59 @@ bool PDA::Accepts(const std::string& INPUT) {
  */
 bool PDA::ProcessTransition() {
   // Retrieving the current transition, which contains the actual state, the input symbols to consume and the stack.
-  const TransitionInfo CURRENT_TRANSITION{pendantTransitions.front()};
-  pendantTransitions.pop();
+  const TransitionInfo& CURRENT_TRANSITION{pendantTransitions.front()};
   if (isTraceEnabled) {
     PrintTransitionTrace(CURRENT_TRANSITION);
   }
   State* actualState{std::get<0>(CURRENT_TRANSITION)};
-  const std::vector<Symbol> INPUT_SYMBOLS{std::get<1>(CURRENT_TRANSITION)};
+  const std::vector<Symbol>& INPUT_SYMBOLS{std::get<1>(CURRENT_TRANSITION)};
   PDAStack stack{std::get<2>(CURRENT_TRANSITION)};
   // If the stack is empty, we check if the input string is consumed.
   if (stack.IsEmpty()) {
+    pendantTransitions.pop();
     return INPUT_SYMBOLS.empty();
   }
   // Getting the top of the stack and the actual symbol to consume to find the next possible transitions.
   const Symbol STACK_TOP{stack.Pop()};
-  const Symbol ACTUAL_SYMBOL{INPUT_SYMBOLS.empty() ? Symbol::EPSILON : INPUT_SYMBOLS[0]};
+  const Symbol& ACTUAL_SYMBOL{INPUT_SYMBOLS.empty() ? Symbol::EPSILON : INPUT_SYMBOLS[0]};
   // If the actual symbol is not in the PDA alphabet, we throw an exception.
   if (innerAlphabet.find(ACTUAL_SYMBOL) == innerAlphabet.end()) {
     const std::string ALPHABET_STR{std::accumulate(innerAlphabet.begin(), innerAlphabet.end(), std::string{}, [](const std::string& ACCOUNT, const Symbol& SYMBOL) { return ACCOUNT + SYMBOL.ToString() + " "; })};
     throw std::invalid_argument{"Runtime error: Symbol: '" + ACTUAL_SYMBOL.ToString() + "' not found in PDA alphabet ( " + ALPHABET_STR + ")"};
   }
   // Retrieving the possible transitions from the actual state with the actual symbol and the top of the stack.
-  if (actualState->Transitions().find(ACTUAL_SYMBOL) != actualState->Transitions().end()
-      && actualState->Transitions()[ACTUAL_SYMBOL].find(STACK_TOP) != actualState->Transitions()[ACTUAL_SYMBOL].end()) {
-    const auto& POSSIBLE_TRANSITIONS{actualState->Transitions()[ACTUAL_SYMBOL][STACK_TOP]};
-    // For each possible transition, we create a new transition with the next state, the new input symbols and the new stack.
-    for (const auto& TRANSITION : POSSIBLE_TRANSITIONS) {
-      State* nextState{std::get<0>(TRANSITION)};
-      const std::vector<Symbol> NEW_STACK_SYMBOLS{std::get<1>(TRANSITION)};
-      const std::vector<Symbol> NEW_INPUT_SYMBOLS{INPUT_SYMBOLS.size() > 1 ? std::vector<Symbol>{INPUT_SYMBOLS.begin() + 1, INPUT_SYMBOLS.end()} : std::vector<Symbol>{}};
-      PDAStack newStack{stack};
-      // Pushing the new symbols to the stack.
-      for (int i{0}; i < NEW_STACK_SYMBOLS.size(); ++i) {
-        const Symbol TO_PUSH_SYMBOL{NEW_STACK_SYMBOLS[NEW_STACK_SYMBOLS.size() - 1 - i]};
-        if (TO_PUSH_SYMBOL != Symbol::EPSILON) {
-          newStack.Push(TO_PUSH_SYMBOL);
-        }
-      }
-      // Adding the new transition to the queue of transitions.
-      pendantTransitions.push(TransitionInfo{nextState, NEW_INPUT_SYMBOLS, newStack});
-      // Printing the next transitions if the trace mode is enabled.
-      if (isTraceEnabled) {
-        PrintNextTransitions(actualState, ACTUAL_SYMBOL, STACK_TOP, nextState, NEW_STACK_SYMBOLS);
-      }
+  const auto& POSSIBLE_TRANSITIONS{actualState->Transitions().GetTransitions(ACTUAL_SYMBOL, STACK_TOP)};
+  // For each possible transition, we create a new transition with the next state, the new input symbols and the new stack.
+  for (const auto& TRANSITION : POSSIBLE_TRANSITIONS) {
+    State* nextState{std::get<0>(TRANSITION)};
+    const std::vector<Symbol>& NEW_STACK_SYMBOLS{std::get<1>(TRANSITION)};
+    const std::vector<Symbol>& NEW_INPUT_SYMBOLS{INPUT_SYMBOLS.size() > 1 ? std::vector<Symbol>{INPUT_SYMBOLS.begin() + 1, INPUT_SYMBOLS.end()} : std::vector<Symbol>{}};
+    PDAStack newStack{stack};
+    // Pushing the new symbols to the stack.
+    newStack.Push(NEW_STACK_SYMBOLS);
+    // Adding the new transition to the queue of transitions.
+    pendantTransitions.push(TransitionInfo{nextState, NEW_INPUT_SYMBOLS, newStack});
+    // Printing the next transitions if the trace mode is enabled.
+    if (isTraceEnabled) {
+      PrintNextTransitions(actualState, ACTUAL_SYMBOL, STACK_TOP, nextState, NEW_STACK_SYMBOLS);
     }
   }
   // Checking epsilon transitions only if we have not checked them yet.
-  if (ACTUAL_SYMBOL != Symbol::EPSILON && actualState->Transitions().find(Symbol::EPSILON) != actualState->Transitions().end()
-      && actualState->Transitions()[Symbol::EPSILON].find(STACK_TOP) != actualState->Transitions()[Symbol::EPSILON].end()) {
-    const auto& POSSIBLE_TRANSITIONS{actualState->Transitions()[Symbol::EPSILON][STACK_TOP]};
-    for (const auto& TRANSITION : POSSIBLE_TRANSITIONS) {
+  if (ACTUAL_SYMBOL != Symbol::EPSILON) {
+    const auto& POSSIBLE_EPSILON_TRANSITIONS{actualState->Transitions().GetTransitions(Symbol::EPSILON, STACK_TOP)};
+    for (const auto& TRANSITION : POSSIBLE_EPSILON_TRANSITIONS) {
       State* nextState{std::get<0>(TRANSITION)};
-      const std::vector<Symbol> NEW_STACK_SYMBOLS{std::get<1>(TRANSITION)};
+      const std::vector<Symbol>& NEW_STACK_SYMBOLS{std::get<1>(TRANSITION)};
       PDAStack newStack{stack};
-      for (int i{0}; i < NEW_STACK_SYMBOLS.size(); ++i) {
-        const Symbol TO_PUSH_SYMBOL{NEW_STACK_SYMBOLS[NEW_STACK_SYMBOLS.size() - 1 - i]};
-        if (TO_PUSH_SYMBOL != Symbol::EPSILON) {
-          newStack.Push(TO_PUSH_SYMBOL);
-        }
-      }
+      newStack.Push(NEW_STACK_SYMBOLS);
       pendantTransitions.push(TransitionInfo{nextState, INPUT_SYMBOLS, newStack});
       if (isTraceEnabled) {
         PrintNextTransitions(actualState, Symbol::EPSILON, STACK_TOP, nextState, NEW_STACK_SYMBOLS);
       }
     }
   }
+  // Removing the current transition from the queue.
+  pendantTransitions.pop();
   return false;
 }
 

@@ -40,7 +40,7 @@ std::vector<Symbol> Symbol::ToSymbols(const std::string& INPUT_STR) {
  * @return true If the symbols are equal.
  * @return false If the symbols are different.
  */
-bool Symbol::operator ==(const Symbol& OTHER) const {
+bool Symbol::operator==(const Symbol& OTHER) const {
   return value == OTHER.value;
 }
 
@@ -51,7 +51,7 @@ bool Symbol::operator ==(const Symbol& OTHER) const {
  * @return true If the symbols are different.
  * @return false If the symbols are equal.
  */
-bool Symbol::operator !=(const Symbol& OTHER) const {
+bool Symbol::operator!=(const Symbol& OTHER) const {
   return value != OTHER.value;
 }
 
@@ -62,8 +62,21 @@ bool Symbol::operator !=(const Symbol& OTHER) const {
  * @return true If the current symbol is less than the other.
  * @return false If the current symbol is greater or equal than the other.
  */
-bool Symbol::operator <(const Symbol& OTHER) const {
+bool Symbol::operator<(const Symbol& OTHER) const {
   return value < OTHER.value;
+}
+
+/**
+ * @brief Copy assignment operator.
+ * 
+ * @param OTHER Symbol to assign from.
+ * @return Reference to this symbol.
+ */
+Symbol& Symbol::operator=(const Symbol& OTHER) {
+  if (this != &OTHER) {
+    value = OTHER.value;
+  }
+  return *this;
 }
 
 /**
@@ -71,6 +84,18 @@ bool Symbol::operator <(const Symbol& OTHER) const {
  * 
  * @return The string representation of the symbol.
  */
-std::string Symbol::ToString() const {
+const std::string Symbol::ToString() const {
   return std::string{value};
+}
+
+/**
+ * @brief Swaps a symbol with another.
+ * 
+ * @param one First symbol.
+ * @param other Second symbol.
+ */
+void swap(Symbol& one, Symbol& other) {
+  Symbol temp{one};
+  one = other;
+  other = temp;
 }

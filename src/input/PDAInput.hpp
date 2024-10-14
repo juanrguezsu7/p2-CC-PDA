@@ -8,15 +8,9 @@
 #pragma once
 
 #include <fstream>
-#include <algorithm>
 #include <sstream>
 
 #include "../structure/PDA.hpp"
-
-/**
- * @brief Type to represent the result of a transition. The result is a tuple containing the next state and the symbols to push to the stack. 
- */
-using TransitionResult = std::tuple<State*, std::vector<Symbol>>;
 
 /**
  * @brief Class to read a PDA from a file. The file must have the following format (comments with a '#' starting the line will be ignored):

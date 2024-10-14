@@ -26,7 +26,7 @@ make clean
 ```
 
 ## Modo traza
-Para activar el modo traza, descomente la siguiente línea en el archivo *main.cpp*:
+Para activar el modo traza, descomente la siguiente línea en el archivo *main.cpp* y compile el programa nuevamente:
 ```cpp
 pda.EnableTrace();
 ```
@@ -58,6 +58,7 @@ Se han implementado otras clases auxiliares para representar los elementos del a
 * **PDAStack:** Clase que representa la pila del autómata de pila.
 * **State:** Clase que representa un estado del autómata de pila.
 * **Symbol:** Clase que representa un símbolo del autómata de pila.
-* Y otros tipos para representar las transiciones del autómata de pila.
+* **TransitionSet:** Clase que representa un conjunto de transiciones de un estado del autómata de pila.
+* Y otros tipos para representar simplificar el resultado de la función de transición.
 
 Para la entrada del autómata de pila, se ha implementado una clase **PDAInput** que lee un archivo que contiene la definición del autómata de pila y devuelve un objeto de la clase **PDA**.
