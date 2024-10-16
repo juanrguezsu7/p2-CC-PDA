@@ -44,7 +44,11 @@ PDA PDAInput::ReadPDA(const std::string& FILENAME) {
   Alphabet stackAlphabet;
   readingStream = std::stringstream{lines[2]};
   while (readingStream >> rawData) {
-    stackAlphabet.insert(Symbol{rawData[0]});
+    const Symbol SYMBOL{rawData[0]};
+    if (SYMBOL == Symbol::EPSILON) {
+      throw std::invalid_argument{"Reading file error: Stack alphabet cannot contain the empty symbol"};
+    }
+    stackAlphabet.insert(SYMBOL);
   }
   if (states.find(lines[3]) == states.end()) {
     throw std::invalid_argument{"Reading file error: Initial state: '" + lines[3] + "' not found in states list ( " + StatesFormatting(states) + ")"};
